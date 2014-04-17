@@ -27,6 +27,8 @@ import com.jaspersoft.ireport.designer.IReportConnection;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
+import java.util.logging.Logger;
 
 /**
  *
@@ -88,6 +90,14 @@ public class SimpleSQLDataSource implements javax.sql.DataSource {
      */
     public void setIRConnection(IReportConnection iRConnection) {
         this.iRConnection = iRConnection;
+    }
+
+    /*
+     *  Add this dummy method, dunno know why it doesn't exists in 
+     *  iReport's public source, but can't compile without it.
+     */
+    public Logger getParentLogger() throws SQLFeatureNotSupportedException {
+        return null;
     }
 
 }

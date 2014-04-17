@@ -1,0 +1,391 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- You may freely edit this file. See harness/README in the NetBeans platform -->
+<!-- for some information on what you could do (e.g. targets to override). -->
+<!-- If you delete this file and reopen the project it will be recreated. -->
+<project name="iReport" basedir=".">
+    <description>Builds the module suite iReport.</description>
+    <import file="nbproject/build-impl.xml"/>
+
+    <patternset id="locale.platform.included.files">
+                <include name="platform*/**/*_de.jar"/>
+                <include name="platform*/**/*_es.jar"/>
+                <include name="platform*/**/*_fr.jar"/>
+                <include name="platform*/**/*_it.jar"/>
+                <include name="platform*/**/*_ja.jar"/>
+                <include name="platform*/**/*_pl.jar"/>
+                <include name="platform*/**/*_pt_BR.jar"/>
+                <include name="platform*/**/*_sq.jar"/>
+                <include name="platform*/**/*_zh_TW.jar"/>
+                <include name="platform*/**/*_zh_CN.jar"/>
+
+                <include name="ide*/**/*_de.jar"/>
+                <include name="ide*/**/*_es.jar"/>
+                <include name="ide*/**/*_fr.jar"/>
+                <include name="ide*/**/*_it.jar"/>
+                <include name="ide*/**/*_ja.jar"/>
+                <include name="ide*/**/*_pl.jar"/>
+                <include name="ide*/**/*_pt_BR.jar"/>
+                <include name="ide*/**/*_sq.jar"/>
+                <include name="ide*/**/*_zh_TW.jar"/>
+                <include name="ide*/**/*_zh_CN.jar"/>
+
+                <include name="nb*/**/*_de.jar"/>
+                <include name="nb*/**/*_es.jar"/>
+                <include name="nb*/**/*_fr.jar"/>
+                <include name="nb*/**/*_it.jar"/>
+                <include name="nb*/**/*_ja.jar"/>
+                <include name="nb*/**/*_pl.jar"/>
+                <include name="nb*/**/*_pt_BR.jar"/>
+                <include name="nb*/**/*_sq.jar"/>
+                <include name="nb*/**/*_zh_TW.jar"/>
+                <include name="nb*/**/*_zh_CN.jar"/>
+    </patternset>
+
+    <target name="update_versions" depends="-init" description="Update the version of the branding files to the app.title and app.version">
+        <propertyfile
+            file="${basedir}/branding/core/core.jar/org/netbeans/core/startup/Bundle.properties"
+            comment="Updated by build script">
+            <entry key="currentVersion" value="${app.title} ${app.version} " />
+        </propertyfile>
+
+        <propertyfile
+                file="${basedir}/branding/modules/org-netbeans-core-windows.jar/org/netbeans/core/windows/view/ui/Bundle.properties"
+                comment="Updated by build script">
+                <entry key="CTL_MainWindow_Title" value="${app.title} ${app.version}" />
+                <entry key="CTL_MainWindow_Title_No_Project" value="${app.title} ${app.version}" />
+        </propertyfile>
+
+
+        <propertyfile
+                file="${basedir}/branding/modules/org-netbeans-core.jar/org/netbeans/core/ui/Bundle.properties"
+                comment="Updated by build script">
+                <entry key="LBL_ProductInformation" value="${app.title}" />
+        </propertyfile>
+
+        <replace dir="${basedir}/heartbeat/src/com/jaspersoft/ireport/heartbeat" value="    public static final String VERSION = &quot;${app.version}&quot;;//">
+            <include name="Installer.java"/>
+            <replacetoken>    public static final String VERSION = </replacetoken>
+           <!-- <replacevalue></replacevalue> -->
+        </replace>
+        
+    </target>
+
+
+   <!-- =========================================================
+      Create all the distributions
+    ============================================================= -->
+     <target name="create-ireport-distro" depends="create-ireport-distro-zip, create-ireport-distro-tgz, create-ireport-distro-src-zip, create-ireport-distro-nbm, create-ireport-distro-win-installer" description="Creates the iReport distributions (zip, tgz)">
+    </target>
+
+    <target name="pre-distro" depends="build,build-launchers" description="Creates the dist and the dist directory">
+        <mkdir dir="dist"/>
+        <replace file="${build.launcher.dir}/etc/${app.name}.conf">
+                <replacefilter token="/dev" value="/${app.version}" />
+                <replacefilter token="-J-Xms24m -J-Xmx64m"  value="${run.args.extra}" />
+        </replace>
+        <copy file="${basedir}/etc/document.ico" tofile="${build.launcher.dir}/bin/document.ico"/>
+        <copy file="${basedir}/etc/app.exe" tofile="${build.launcher.dir}/bin/${app.name}.exe" overwrite="true"/>
+    </target>
+
+
+
+    <!-- =========================================================
+      Create the regular zip distributions for iReport NB
+    ============================================================= -->
+    <target name="create-ireport-distro-zip" depends="pre-distro" description="Creates an unzipped platform from the suite, launchers, and selected modules from the platform.">
+        <zip duplicate="preserve" destfile="dist/${distro.zipfilename}.zip">
+            <zipfileset dir="${build.launcher.dir}/bin/" filemode="755" prefix="${distro.zipfilename}/bin"/>
+            <zipfileset dir="${build.launcher.dir}/etc/" prefix="${distro.zipfilename}/etc"/>
+            <zipfileset dir="${netbeans.dest.dir}" filemode="755" prefix="${distro.zipfilename}">
+                <include name="**/lib/nbexec*"/>
+            </zipfileset>
+            <zipfileset dir="." prefix="${distro.zipfilename}">
+                <include name="Changelog.txt"/>
+                <include name="notice.txt"/>
+                <include name="readme.txt"/>
+                <include name="LICENSE_ireport.txt"/>
+            </zipfileset>
+            <!-- <zipfileset  dir="etc/" filemode="755" prefix="${distro.zipfilename}/etc"/> -->
+            <zipfileset dir="${netbeans.dest.dir}" prefix="${distro.zipfilename}">
+                <and>
+                    <not>
+                        <filename name="**/lib/nbexec*"/>
+                    </not>
+                    <selector refid="zip.platform.included.files"/>
+                </and>
+            </zipfileset>
+            <zipfileset  dir="${netbeans.dest.dir}" prefix="${distro.zipfilename}">
+                <patternset refid="locale.platform.included.files"/>
+            </zipfileset>
+
+            <!-- Yes, the doubled app.name is a bit ugly, but better than the alternative; cf. #66441: -->
+            <zipfileset dir="${cluster}" prefix="${distro.zipfilename}/${app.name}">
+                <exclude name="config/Modules/*.xml_hidden"/>
+            </zipfileset>
+
+        </zip>
+    </target>
+
+    <!-- =========================================================
+      Create the regular tar.gz distributions for iReport NB
+    ============================================================= -->
+    <target name="create-ireport-distro-tgz" depends="pre-distro" description="Creates an unzipped platform from the suite, launchers, and selected modules from the platform.">
+        <tar tarfile="dist/${distro.zipfilename}.tar">
+            <tarfileset  dir="${build.launcher.dir}/bin/" filemode="755" prefix="${distro.zipfilename}/bin"/>
+            <tarfileset  dir="${build.launcher.dir}/etc/" prefix="${distro.zipfilename}/etc"/>
+            <tarfileset  dir="${netbeans.dest.dir}" filemode="755" prefix="${distro.zipfilename}">
+                <include name="**/lib/nbexec*"/>
+            </tarfileset >
+            <tarfileset  dir="." prefix="${distro.zipfilename}">
+                <include name="Changelog.txt"/>
+                <include name="notice.txt"/>
+                <include name="readme.txt"/>
+                <include name="LICENSE_ireport.txt"/>
+            </tarfileset>
+            <!-- <tarfileset  dir="etc/" filemode="755" prefix="${distro.zipfilename}/etc"/> -->
+
+            <tarfileset  dir="${netbeans.dest.dir}" prefix="${distro.zipfilename}">
+                <and>
+                    <not>
+                        <filename name="**/lib/nbexec*"/>
+                    </not>
+                    <selector refid="zip.platform.included.files"/>
+                </and>
+                
+            </tarfileset>
+            <tarfileset  dir="${netbeans.dest.dir}" prefix="${distro.zipfilename}">
+                <patternset refid="locale.platform.included.files"/>
+                <exclude name="**/*Test*"/>
+
+            </tarfileset>
+
+            <!-- Yes, the doubled app.name is a bit ugly, but better than the alternative; cf. #66441: -->
+            <tarfileset dir="${cluster}" prefix="${distro.zipfilename}/${app.name}">
+                <exclude name="config/Modules/*.xml_hidden"/>
+            </tarfileset>
+       </tar>
+
+        <gzip zipfile="dist/${distro.zipfilename}.tar.gz" src="dist/${distro.zipfilename}.tar"/>
+        <delete file="dist/${distro.zipfilename}.tar"/>
+    </target>
+
+   <!-- =========================================================
+      Create the regular source code distribution for iReport
+    ============================================================= -->
+    <target name="create-ireport-distro-src-zip" depends="pre-distro" description="Creates an unzipped platform from the suite, launchers, and selected modules from the platform.">
+        <zip duplicate="preserve" destfile="dist/${distro.zipfilename}-src.zip">
+            <!-- <zipfileset dir="${build.launcher.dir}/bin/" filemode="755" prefix="${distro.zipfilename}-src/bin"/>
+             <zipfileset dir="${build.launcher.dir}/etc/" prefix="${distro.zipfilename}-src/etc"/>
+             <zipfileset dir="${netbeans.dest.dir}" filemode="755" prefix="${distro.zipfilename}-src">
+                <include name="**/lib/nbexec*"/>
+            </zipfileset>
+            -->
+            <zipfileset dir="." prefix="${distro.zipfilename}-src">
+                <include name="Changelog.txt"/>
+                <include name="notice.txt"/>
+                <include name="readme.txt"/>
+                <include name="build.xml"/>
+                <include name="LICENSE_ireport.txt"/>
+                <include name="nbproject/**"/>
+                <include name="ireport-addons/**"/>
+                <include name="ireport-designer/**"/>
+                <include name="ireport-samples/**"/>
+                <include name="ireport-standalone-specific/**"/>
+                <include name="jasperreports-components/**"/>
+                <include name="jasperreports-extensions/**"/>
+                <include name="jasperserver-plugin/**"/>
+                <include name="HadoopHive/**"/>
+                <include name="MongoDB/**"/>
+                <include name="heartbeat/**"/>
+                <include name="branding/**"/>
+                <include name="etc/**"/>
+                <exclude name="**/private/**"/>
+                <exclude name="**/build/**"/>
+                <exclude name="**/dist/**"/>
+                
+            </zipfileset>
+
+<!--
+            <zipfileset dir="." prefix="${distro.zipfilename}-src">
+                <and>
+                    <not>
+                        <filename name="**/lib/nbexec*"/>
+                    </not>
+                    <selector refid="zip.platform.included.files"/>
+                </and>
+            </zipfileset>
+            <zipfileset dir="." prefix="${distro.zipfilename}-src">
+                <patternset refid="locale.platform.included.files"/>
+            </zipfileset>
+
+            <zipfileset dir="${cluster}" prefix="${distro.zipfilename}-src/${app.name}">
+                <exclude name="config/Modules/*.xml_hidden"/>
+            </zipfileset>
+-->
+        </zip>
+    </target>
+
+    <!-- =========================================================
+      Create the nmb distribution of iReport as NetBeans IDE plugin
+    ============================================================= -->
+    <target name="create-ireport-distro-nbm" depends="nbms" description="Creates an unzipped platform from the suite, launchers, and selected modules from the platform.">
+        <mkdir dir="dist"/>
+        <copy file="build/updates/com-jaspersoft-ireport.nbm" tofile="dist/${distro.zipfilename}.nbm" />
+        <copy file="build/updates/com-jaspersoft-ireport-jasperserver.nbm" tofile="dist/${distro.zipfilename.js}.nbm" />
+        <copy file="build/updates/com-jaspersoft-ireport-heartbeat.nbm" tofile="dist/${distro.zipfilename.hb}.nbm" />
+        <copy file="build/updates/com-jaspersoft-ireport-components.nbm" tofile="dist/${distro.zipfilename.components}.nbm" />
+        <copy file="build/updates/com-jaspersoft-jrx.nbm" tofile="dist/${distro.zipfilename.extensions}.nbm" />
+        <zip destfile="dist/${distro.zipfilename}-plugin.zip">
+            <zipfileset dir="dist" prefix="">
+                <include name="${distro.zipfilename}.nbm"/>
+                <include name="${distro.zipfilename.js}.nbm"/>
+                <include name="${distro.zipfilename.components}.nbm"/>
+                <include name="${distro.zipfilename.extensions}.nbm"/>
+            </zipfileset>
+        </zip>
+
+    </target>
+
+
+<target name="create-ireport-distro-mac" depends="pre-distro,build-mac" description="Creates an unzipped platform from the suite, launchers, and selected modules from the platform.">
+    <echo message="${basedir}"/>
+    <delete file="${dist.dir}/${app.name}.app/Contents/Resources/${app.name}.icns"/>
+    <copy file="${basedir}/etc/ireport.icns" tofile="${dist.dir}/${app.name}.app/Contents/Resources/${app.name}.icns"/>
+    <mkdir dir="${dist.dir}/${distro.zipfilename}"/>
+
+    
+    <copy todir="${dist.dir}/${app.name}.app/Contents/Resources/${app.name}">
+        <fileset dir="${netbeans.dest.dir}">
+            <patternset refid="locale.platform.included.files"/>
+        </fileset>
+    </copy>
+    <!-- Patch the menu name.... -->
+    <replace file="${dist.dir}/${app.name}.app/Contents/Resources/${app.name}/bin/${app.name}" value="-J-Xdock:name='${app.title.short}' \">
+            <replacetoken><![CDATA[-J-Xdock:name='"$APPNAME"' \]]></replacetoken>
+    </replace>
+    <exec executable="chmod">
+        <arg value="755"/>
+        <arg value="${dist.dir}/${app.name}.app/Contents/Resources/${app.name}/bin/${app.name}"/>
+    </exec>
+    <!-- End patch menu name .... -->
+    <move file="${dist.dir}/${app.name}.app" tofile="${dist.dir}/${distro.zipfilename}/${app.title}.app"/>
+    <symlink link="${dist.dir}/${distro.zipfilename}/Applications" resource="/Applications"/>
+    <copy  todir="${dist.dir}/${distro.zipfilename}">
+                <fileset dir="${basedir}">
+                <include name="Changelog.txt"/>
+                <include name="notice.txt"/>
+                </fileset>
+    </copy>
+    <copy file="${basedir}/LICENSE_ireport.txt" tofile="${dist.dir}/${distro.zipfilename}/license.txt"/>
+    <exec executable="hdiutil">
+        <arg value="create"/>
+        <arg value="-srcfolder"/>
+        <arg value="${dist.dir}/${distro.zipfilename}"/>
+        <arg value="${dist.dir}/${distro.zipfilename}"/>
+    </exec>
+    <exec executable="unlink">
+        <arg value="${dist.dir}/${distro.zipfilename}/Applications"/>
+    </exec>
+    <delete dir="${dist.dir}/${distro.zipfilename}"/>
+
+</target>
+
+
+    <!-- =========================================================
+      Create the iReport windows installer
+    ============================================================= -->
+    <target name="create-ireport-distro-win-installer" depends="pre-distro" description="Creates an unzipped platform from the suite, launchers, and selected modules from the platform.">
+       <property name="distro.installer.dir"  value="dist/${distro.zipfilename}-windows-installer"/>
+        <mkdir dir="${distro.installer.dir}"/>
+        <mkdir dir="${distro.installer.dir}/bin"/>
+        <copy todir="${distro.installer.dir}/bin">
+            <fileset dir="${build.launcher.dir}/bin/"/>
+        </copy>
+        <mkdir dir="${distro.installer.dir}/etc"/>
+        <copy todir="${distro.installer.dir}/etc">
+            <fileset dir="${build.launcher.dir}/etc/"/>
+        </copy>
+        <copy todir="${distro.installer.dir}">
+            <fileset dir="${netbeans.dest.dir}">
+                <include name="**/lib/nbexec*"/>
+            </fileset>
+            <fileset dir=".">
+                <include name="Changelog.txt"/>
+                <include name="notice.txt"/>
+                <include name="readme.txt"/>
+                <include name="LICENSE_ireport.txt"/>
+            </fileset>
+
+            <fileset dir="${netbeans.dest.dir}">
+                <and>
+                    <not>
+                        <filename name="**/lib/nbexec*"/>
+                    </not>
+                    <selector refid="zip.platform.included.files"/>
+                </and>
+            </fileset>
+            <fileset dir="${netbeans.dest.dir}">
+                <patternset refid="locale.platform.included.files"/>
+            </fileset>
+        </copy>
+        <mkdir dir="${distro.installer.dir}/${app.name}"/>
+        <copy todir="${distro.installer.dir}/${app.name}">
+        <!-- Yes, the doubled app.name is a bit ugly, but better than the alternative; cf. #66441: -->
+            <fileset dir="${cluster}">
+                <exclude name="config/Modules/*.xml_hidden"/>
+            </fileset>
+        </copy>
+
+        <taskdef name="nsisant"
+		classname="net.sf.nsisant.Task"
+		classpath="etc/nsisant-1.1.jar"/>
+	<nsisant script="etc/iReportInstaller.nsi">
+		<define name="PRODUCT_VERSION" value="${app.version}"/>
+		<define name="PRODUCT_NAME" value="${app.title.short}"/>
+		<define name="PRODUCT_WEB_SITE" value="http://ireport.sourceforge.net"/>
+	</nsisant>
+        <delete dir="${distro.installer.dir}"/>
+    </target>
+
+    <!-- =========================================================
+      The modified Build Zip Distribution with UTF-8 encoding by default
+    ============================================================= -->
+    <target name="build-zip" depends="suite.build-zip">
+        <unzip src="${dist.dir}/${app.name}.zip" dest="${dist.dir}"/>
+
+        <replace file="${dist.dir}/${app.name}/etc/${app.name}.conf">
+            <replacefilter token="-J-Xms24m -J-Xmx64m" value="${run.args.extra}" />
+        </replace>
+
+        <zip destfile="${dist.dir}/${app.name}.zip">
+            <zipfileset dir="${dist.dir}/${app.name}/" prefix="${app.name}"/>
+        </zip>
+
+        <delete dir="${dist.dir}/${app.name}"/>
+    </target>
+
+    <target name="update_platform_generic" description="Update the 6.0.1 platform" depends="build">
+
+        <delete failonerror="false">
+            <fileset dir="${netbeans.dest.dir}/ireport" includes="**/*"/>
+        </delete>
+        <mkdir dir="${netbeans.dest.dir}/ireport"/>
+        <copy todir="${netbeans.dest.dir}/ireport">
+            <fileset dir="build/cluster/" includes="**/*"/>
+        </copy>
+<!--
+        <copy file="build/cluster/modules/com-jaspersoft-ireport-jasperserver.jar" tofile="${netbeans.dest.dir}/ireport/modules/com-jaspersoft-ireport-jasperserver.jar" />
+        <copy file="build/cluster/modules/com-jaspersoft-ireport.jar" tofile="${netbeans.dest.dir}/ireport/modules/com-jaspersoft-ireport.jar" />
+        <copy file="build/cluster/update_tracking/com-jaspersoft-ireport.xml" tofile="${netbeans.dest.dir}/ireport/update_tracking/com-jaspersoft-ireport.xml" />
+        <copy file="build/cluster/update_tracking/com-jaspersoft-ireport-jasperserver.xml" tofile="${netbeans.dest.dir}/ireport/update_tracking/com-jaspersoft-ireport-jasperserver.xml" />
+        <delete>
+            <fileset dir="${netbeans.dest.dir}/ireport/modules/ext" includes="**/*.jar"/>
+        </delete>
+
+        <copy todir="${netbeans.dest.dir}/ireport/modules/ext">
+            <fileset dir="build/cluster/modules/ext" includes="**/*.jar"/>
+        </copy>
+   -->
+    </target>
+
+</project>

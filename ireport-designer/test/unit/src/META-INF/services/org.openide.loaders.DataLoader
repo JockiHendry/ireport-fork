@@ -1,0 +1,5 @@
+com.jaspersoft.ireport.JrxmlDataLoader
+com.jaspersoft.ireport.designer.palette.PaletteItemDataLoader
+com.jaspersoft.ireport.designer.jrtx.JRTXDataLoader
+com.jaspersoft.ireport.designer.jrctx.JRCTXDataLoader
+com.jaspersoft.ireport.jasper.JasperDataLoader

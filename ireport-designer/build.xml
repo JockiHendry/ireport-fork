@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- You may freely edit this file. See harness/README in the NetBeans platform -->
+<!-- for some information on what you could do (e.g. targets to override). -->
+<!-- If you delete this file and reopen the project it will be recreated. -->
+<project name="com.jaspersoft.ireport" default="netbeans" basedir=".">
+    <description>Builds, tests, and runs the project com.jaspersoft.ireport.</description>
+    <import file="nbproject/build-impl.xml"/>
+    <!--
+    <target name="files-init" depends="basic-init,-release.files">
+        <echo message="Ciao da files-init ${has.release.dir}  ${release.files}"/>
+        <property name="release.files" value=""/>
+        <property name="release.files.extra" value=""/>
+        <property name="extra.module.files" value=""/>
+        <patternset id="module.files" includes="${release.files},${release.files.extra},${extra.module.files}">
+            <include name="${module.jar}"/>
+            <include name="${javahelp.jar}" if="has.javahelp"/>
+            <include name="config/Modules/${code.name.base.dashes}.xml"/>
+            <include name="config/ModuleAutoDeps/${code.name.base.dashes}.xml" if="has.module.auto.deps"/>
+            <include name="ant/nblib/${code.name.base.dashes}.jar"/>
+            <include name="${extra.module.files2}"/>
+        </patternset>
+    </target>
+    
+    <target name="release" depends="files-init" if="has.release.dir">
+        <mkdir dir="${cluster}"/>
+        <copy todir="${cluster}" verbose="true">
+            <fileset dir="${release.dir}">
+                <patternset includes="${release.files}">
+                    <include name="${extra.module.files2}"/>
+                </patternset>
+            </fileset>
+        </copy>
+    </target>
+    -->
+</project>

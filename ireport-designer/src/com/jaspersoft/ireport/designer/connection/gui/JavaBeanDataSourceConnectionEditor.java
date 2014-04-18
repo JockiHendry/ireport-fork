@@ -61,6 +61,9 @@ public class JavaBeanDataSourceConnectionEditor extends javax.swing.JPanel imple
         jLabel13 = new javax.swing.JLabel();
         jTextFieldJBSetMethodToCall = new javax.swing.JTextField();
         jCheckBoxisUseFieldDescription = new javax.swing.JCheckBox();
+        jLabel14 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTextFieldJBGroovyCode = new javax.swing.JTextArea();
 
         setLayout(new java.awt.BorderLayout());
 
@@ -128,11 +131,32 @@ public class JavaBeanDataSourceConnectionEditor extends javax.swing.JPanel imple
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
         gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(4, 4, 4, 4);
         jPanelBeansSet.add(jCheckBoxisUseFieldDescription, gridBagConstraints);
+
+        jLabel14.setText(I18n.getString("JavaBeanDataSourceConnectionEditor.Label.GroovyCode")); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(4, 4, 0, 4);
+        jPanelBeansSet.add(jLabel14, gridBagConstraints);
+
+        jTextFieldJBGroovyCode.setColumns(20);
+        jTextFieldJBGroovyCode.setRows(5);
+        jScrollPane1.setViewportView(jTextFieldJBGroovyCode);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridy = 8;
+        gridBagConstraints.gridheight = java.awt.GridBagConstraints.RELATIVE;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.ipadx = 1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 5);
+        jPanelBeansSet.add(jScrollPane1, gridBagConstraints);
 
         add(jPanelBeansSet, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
@@ -143,9 +167,12 @@ public class JavaBeanDataSourceConnectionEditor extends javax.swing.JPanel imple
     private javax.swing.JCheckBox jCheckBoxisUseFieldDescription;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
     private javax.swing.JPanel jPanelBeansSet;
     private javax.swing.JRadioButton jRadioButtonJBSetArray;
     private javax.swing.JRadioButton jRadioButtonJBSetCollection;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTextArea jTextFieldJBGroovyCode;
     private javax.swing.JTextField jTextFieldJBSetFactoryClass;
     private javax.swing.JTextField jTextFieldJBSetMethodToCall;
     // End of variables declaration//GEN-END:variables
@@ -160,6 +187,7 @@ public class JavaBeanDataSourceConnectionEditor extends javax.swing.JPanel imple
             this.jTextFieldJBSetFactoryClass.setText( con.getFactoryClass());
             this.jTextFieldJBSetMethodToCall.setText(con.getMethodToCall());
             this.jCheckBoxisUseFieldDescription.setSelected(con.isUseFieldDescription());
+            this.jTextFieldJBGroovyCode.setText(con.getGroovyCode());
             if (con.getType().equals(JavaBeanDataSourceConnection.BEAN_ARRAY)  )
             {
                 jRadioButtonJBSetArray.setSelected(true);
@@ -180,6 +208,7 @@ public class JavaBeanDataSourceConnectionEditor extends javax.swing.JPanel imple
         ((JavaBeanDataSourceConnection)irConn).setFactoryClass( this.jTextFieldJBSetFactoryClass.getText().trim() );
         ((JavaBeanDataSourceConnection)irConn).setMethodToCall( this.jTextFieldJBSetMethodToCall.getText().trim() );
         ((JavaBeanDataSourceConnection)irConn).setUseFieldDescription( this.jCheckBoxisUseFieldDescription.isSelected() );
+        ((JavaBeanDataSourceConnection)irConn).setGroovyCode(this.jTextFieldJBGroovyCode.getText().trim());
         if (jRadioButtonJBSetArray.isSelected())
         {
             ((JavaBeanDataSourceConnection)irConn).setType( JavaBeanDataSourceConnection.BEAN_ARRAY );

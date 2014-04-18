@@ -28,7 +28,7 @@ import com.jaspersoft.ireport.designer.IReportConnection;
 import com.jaspersoft.ireport.designer.IReportManager;
 import com.jaspersoft.ireport.designer.connection.gui.JavaBeanDataSourceConnectionEditor;
 import com.jaspersoft.ireport.designer.utils.Misc;
-import java.sql.*;
+import groovy.lang.GroovyShell;
 import javax.swing.*;
 
 /**
@@ -43,6 +43,8 @@ public class JavaBeanDataSourceConnection extends IReportConnection {
     private String factoryClass;
     
     private String methodToCall;
+    
+    private String groovyCode;
     
     private boolean useFieldDescription;
     
@@ -79,8 +81,8 @@ public class JavaBeanDataSourceConnection extends IReportConnection {
         map.put("FactoryClass", Misc.nvl(this.getFactoryClass() ,"") );
         map.put("MethodToCall", Misc.nvl(this.getMethodToCall(),""));
         map.put("Type", Misc.nvl(this.getType(),""));
-        map.put("UseFieldDescription", ""+this.isUseFieldDescription());
-       
+        map.put("UseFieldDescription", ""+this.isUseFieldDescription());        
+        map.put("GroovyCode", Misc.nvl(this.getGroovyCode(), ""));
         return map;
     }
     
@@ -96,6 +98,10 @@ public class JavaBeanDataSourceConnection extends IReportConnection {
         if (map.containsKey("Type"))
         {
             this.setType( (String)map.get("Type"));
+        }
+        if (map.containsKey("GroovyCode")) 
+        {
+            this.setGroovyCode((String)map.get("GroovyCode"));
         }
     }
     
@@ -148,6 +154,15 @@ public class JavaBeanDataSourceConnection extends IReportConnection {
     public void setType(java.lang.String type) {
         this.type = type;
     }    
+
+    public String getGroovyCode() {
+        return groovyCode;
+    }
+
+    public void setGroovyCode(String groovyCode) {
+        this.groovyCode = groovyCode;
+    }
+       
     
         /**
      *  This method return an instanced JRDataDource to the database.
@@ -157,20 +172,25 @@ public class JavaBeanDataSourceConnection extends IReportConnection {
     public net.sf.jasperreports.engine.JRDataSource getJRDataSource()
     { 
         try {
-            
-                Class clazz = Thread.currentThread().getContextClassLoader().loadClass(factoryClass);
-	        Object obj = clazz.newInstance();
-       		Object return_obj = obj.getClass().getMethod( methodToCall, new Class[0]).invoke(null,new Object[0]);   
+                Object result;
+                if (getGroovyCode()!=null && !getGroovyCode().trim().isEmpty()) {                    
+                    GroovyShell shell = new GroovyShell(Thread.currentThread().getContextClassLoader());
+                    result = shell.evaluate(getGroovyCode());
+                } else {
+                    Class clazz = Thread.currentThread().getContextClassLoader().loadClass(factoryClass);
+                    Object obj = clazz.newInstance();
+                    result = obj.getClass().getMethod( methodToCall, new Class[0]).invoke(null,new Object[0]);   
+                }
        		
-       		if (return_obj != null) 
+       		if (result != null) 
        		{
 	       		if (Misc.nvl(this.getType(),"").equals(BEAN_ARRAY) )
 	       		{			
-       				return new net.sf.jasperreports.engine.data.JRBeanArrayDataSource((Object[]) return_obj, isUseFieldDescription());
+       				return new net.sf.jasperreports.engine.data.JRBeanArrayDataSource((Object[]) result, isUseFieldDescription());
                         }
        			else if (Misc.nvl(this.getType(),"").equals(BEAN_COLLECTION) )
        			{
-       				return new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource((java.util.Collection) return_obj, isUseFieldDescription());	
+       				return new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource((java.util.Collection) result, isUseFieldDescription());	
        			}
        		}
        		return new net.sf.jasperreports.engine.JREmptyDataSource();
@@ -202,16 +222,24 @@ public class JavaBeanDataSourceConnection extends IReportConnection {
     public void test() throws Exception 
     {
             try {
-                Object obj = Class.forName(getFactoryClass(), true, IReportManager.getInstance().getReportClassLoader()).newInstance();
-                Object ret_obj = obj.getClass().getMethod( getMethodToCall(), new Class[0]).invoke(null,new Object[0]);                
-            
-                if (ret_obj != null && getType().equals(BEAN_COLLECTION) && (ret_obj instanceof  java.util.Collection))
+                Object result;
+                if (getGroovyCode()!=null && !getGroovyCode().trim().isEmpty()) {                    
+                    GroovyShell shell = new GroovyShell(IReportManager.getInstance().getReportClassLoader());
+                    result = shell.evaluate(getGroovyCode());
+                    JOptionPane.showMessageDialog(Misc.getMainWindow(), 
+                        "Result is " + result, "", JOptionPane.INFORMATION_MESSAGE);                    
+                } else {
+                    Object obj = Class.forName(getFactoryClass(), true, IReportManager.getInstance().getReportClassLoader()).newInstance();
+                    result = obj.getClass().getMethod( getMethodToCall(), new Class[0]).invoke(null,new Object[0]);
+                }
+
+                if (result != null && getType().equals(BEAN_COLLECTION) && (result instanceof  java.util.Collection))
                 {
                     JOptionPane.showMessageDialog(Misc.getMainWindow(),
                             //I18n.getString("messages.connectionDialog.connectionTestSuccessful",
                             "Connection test successful!","",JOptionPane.INFORMATION_MESSAGE);
                 }
-                else if (ret_obj != null  && getType().equals(BEAN_ARRAY) && (ret_obj instanceof  Object[]))
+                else if (result != null  && getType().equals(BEAN_ARRAY) && (result instanceof  Object[]))
                 {
                     JOptionPane.showMessageDialog(Misc.getMainWindow(),
                             //I18n.getString("messages.connectionDialog.connectionTestSuccessful",
@@ -223,9 +251,9 @@ public class JavaBeanDataSourceConnection extends IReportConnection {
                             //I18n.getString("messages.connectionDialog.notValidValueReturned",
                             "The method don't return a valid Array or java.util.Collection!\n",
                             "Error",JOptionPane.ERROR_MESSAGE);
-                }
+                }                
                 
-            }catch (NoClassDefFoundError ex)
+            } catch (NoClassDefFoundError ex)
             {
                     JOptionPane.showMessageDialog(Misc.getMainWindow(),
                             Misc.formatString( //"messages.connection.noClassDefFoundError",

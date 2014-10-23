@@ -2700,6 +2700,16 @@ public class ModelUtils {
         applyPenProperties( to.getBottomPen(), from.getBottomPen());
         applyPenProperties( to.getRightPen(), from.getRightPen());
         
+    }        
+    
+    public static void applyBorderProperties(JRLineBox to, JRLineBox from)
+    {
+        // Pens...
+        applyPenProperties( to.getPen(), from.getPen());
+        applyPenProperties( to.getTopPen(), from.getTopPen());
+        applyPenProperties( to.getLeftPen(), from.getLeftPen());
+        applyPenProperties( to.getBottomPen(), from.getBottomPen());
+        applyPenProperties( to.getRightPen(), from.getRightPen());
     }
     
     public static void applyPenProperties(JRPen to, JRPen from)

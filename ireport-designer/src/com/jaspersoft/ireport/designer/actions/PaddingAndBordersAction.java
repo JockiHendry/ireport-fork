@@ -112,14 +112,18 @@ public final class PaddingAndBordersAction extends NodeAction {
         
         panel.setLineBox(box);
         
-        box = panel.showDialog(box);
-       
+        box = panel.showDialog(box);               
+        
         
         if (box != null)
         {
             for (JRLineBox bb : boxes)
             {
-                  ModelUtils.applyBoxProperties(bb, box);
+                  if (panel.chkApplyBorderOnly.isSelected()) {
+                    ModelUtils.applyBorderProperties(bb, box);
+                  } else {
+                    ModelUtils.applyBoxProperties(bb, box);
+                  }
             }
             if (boxes.size() > 0) IReportManager.getInstance().notifyReportChange();
         }

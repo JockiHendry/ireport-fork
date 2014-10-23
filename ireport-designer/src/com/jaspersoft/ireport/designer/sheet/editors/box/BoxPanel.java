@@ -250,6 +250,7 @@ public class BoxPanel extends javax.swing.JPanel implements ActionListener, Bord
         jButtonCancel = new javax.swing.JButton();
         jButtonOk = new javax.swing.JButton();
         jButtonReset = new javax.swing.JButton();
+        chkApplyBorderOnly = new javax.swing.JCheckBox();
 
         setMinimumSize(new java.awt.Dimension(309, 80));
         setLayout(new java.awt.GridBagLayout());
@@ -257,7 +258,7 @@ public class BoxPanel extends javax.swing.JPanel implements ActionListener, Bord
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Padding"));
         jPanel2.setLayout(new java.awt.GridBagLayout());
 
-        jLabel3.setText(I18n.getString("BoxPanel.Label.Left")); // NOI18N
+        jLabel3.setText("Left");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 0;
@@ -279,7 +280,7 @@ public class BoxPanel extends javax.swing.JPanel implements ActionListener, Bord
         gridBagConstraints.insets = new java.awt.Insets(0, 4, 4, 4);
         jPanel2.add(jSpinnerLeft, gridBagConstraints);
 
-        jLabel4.setText(I18n.getString("BoxPanel.Label.Top")); // NOI18N
+        jLabel4.setText("Top");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 1;
@@ -296,7 +297,7 @@ public class BoxPanel extends javax.swing.JPanel implements ActionListener, Bord
         gridBagConstraints.insets = new java.awt.Insets(0, 4, 4, 4);
         jPanel2.add(jSpinnerTop, gridBagConstraints);
 
-        jLabel5.setText(I18n.getString("BoxPanel.Label.Right")); // NOI18N
+        jLabel5.setText("Right");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 4;
         gridBagConstraints.gridy = 0;
@@ -313,7 +314,7 @@ public class BoxPanel extends javax.swing.JPanel implements ActionListener, Bord
         gridBagConstraints.insets = new java.awt.Insets(0, 4, 4, 4);
         jPanel2.add(jSpinnerRight, gridBagConstraints);
 
-        jLabel6.setText(I18n.getString("BoxPanel.Label.Bottom")); // NOI18N
+        jLabel6.setText("Bottom");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 4;
         gridBagConstraints.gridy = 1;
@@ -353,7 +354,7 @@ public class BoxPanel extends javax.swing.JPanel implements ActionListener, Bord
         gridBagConstraints.insets = new java.awt.Insets(8, 4, 4, 4);
         jPanel3.add(jPanelPreview, gridBagConstraints);
 
-        jButtonRestoreDefaults.setText(I18n.getString("BoxPanel.Button.RestoreDefaults")); // NOI18N
+        jButtonRestoreDefaults.setText("Restore defaults");
         jButtonRestoreDefaults.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonRestoreDefaultsActionPerformed(evt);
@@ -373,7 +374,7 @@ public class BoxPanel extends javax.swing.JPanel implements ActionListener, Bord
         jPanel4.setPreferredSize(new java.awt.Dimension(200, 150));
         jPanel4.setLayout(new java.awt.GridBagLayout());
 
-        jLabel1.setText(I18n.getString("BoxPanel.Label.LineWidth")); // NOI18N
+        jLabel1.setText("Line width");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.insets = new java.awt.Insets(8, 4, 4, 4);
         jPanel4.add(jLabel1, gridBagConstraints);
@@ -387,7 +388,7 @@ public class BoxPanel extends javax.swing.JPanel implements ActionListener, Bord
         gridBagConstraints.insets = new java.awt.Insets(8, 0, 0, 8);
         jPanel4.add(jSpinnerLineWidth, gridBagConstraints);
 
-        jLabel7.setText(I18n.getString("BoxPanel.Label.LineStyle")); // NOI18N
+        jLabel7.setText("Line Style");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridy = 1;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
@@ -407,7 +408,7 @@ public class BoxPanel extends javax.swing.JPanel implements ActionListener, Bord
         gridBagConstraints.insets = new java.awt.Insets(8, 0, 0, 8);
         jPanel4.add(jScrollPane1, gridBagConstraints);
 
-        jLabel2.setText(I18n.getString("BoxPanel.Label.LineColor")); // NOI18N
+        jLabel2.setText("Line color");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridy = 2;
         gridBagConstraints.insets = new java.awt.Insets(8, 4, 4, 4);
@@ -447,33 +448,37 @@ public class BoxPanel extends javax.swing.JPanel implements ActionListener, Bord
         gridBagConstraints.insets = new java.awt.Insets(2, 6, 6, 6);
         add(jPanelBorderEditorContainer, gridBagConstraints);
 
-        jButtonCancel.setText(I18n.getString("Global.Button.Cancel")); // NOI18N
+        jButtonCancel.setText("Cancel");
         jButtonCancel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonCancelActionPerformed(evt);
             }
         });
 
-        jButtonOk.setText(I18n.getString("Global.Button.Ok")); // NOI18N
+        jButtonOk.setText("Ok");
         jButtonOk.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonOkActionPerformed(evt);
             }
         });
 
-        jButtonReset.setText(I18n.getString("Global.Button.Reset")); // NOI18N
+        jButtonReset.setText("Reset");
         jButtonReset.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonResetActionPerformed(evt);
             }
         });
 
+        chkApplyBorderOnly.setText("Apply border only");
+
         org.jdesktop.layout.GroupLayout jPanelButtonsLayout = new org.jdesktop.layout.GroupLayout(jPanelButtons);
         jPanelButtons.setLayout(jPanelButtonsLayout);
         jPanelButtonsLayout.setHorizontalGroup(
             jPanelButtonsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanelButtonsLayout.createSequentialGroup()
-                .addContainerGap(137, Short.MAX_VALUE)
+                .addContainerGap()
+                .add(chkApplyBorderOnly, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 113, Short.MAX_VALUE)
+                .add(18, 18, 18)
                 .add(jButtonOk, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 67, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jButtonCancel)
@@ -487,7 +492,8 @@ public class BoxPanel extends javax.swing.JPanel implements ActionListener, Bord
                 .add(jPanelButtonsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(jButtonReset)
                     .add(jButtonCancel)
-                    .add(jButtonOk))
+                    .add(jButtonOk)
+                    .add(chkApplyBorderOnly))
                 .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -548,7 +554,7 @@ public class BoxPanel extends javax.swing.JPanel implements ActionListener, Bord
 }//GEN-LAST:event_jButtonRestoreDefaultsActionPerformed
 
     private void jButtonOkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonOkActionPerformed
-       
+      
         if (dialog != null)
         {
             setDialogResult(JOptionPane.OK_OPTION);
@@ -710,6 +716,7 @@ public class BoxPanel extends javax.swing.JPanel implements ActionListener, Bord
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    public javax.swing.JCheckBox chkApplyBorderOnly;
     private com.jaspersoft.ireport.designer.sheet.editors.box.ColorSelectorPanel colorSelector;
     private javax.swing.JButton jButtonCancel;
     private javax.swing.JButton jButtonOk;
@@ -961,7 +968,7 @@ public class BoxPanel extends javax.swing.JPanel implements ActionListener, Bord
         dialog.setLocationRelativeTo(null);
         dialog.setVisible(true);
         if (getDialogResult() == JOptionPane.OK_OPTION)
-        {
+        {            
             return getLineBox();
         }
         
